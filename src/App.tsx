@@ -1,31 +1,26 @@
-import { Component, useState } from "react";
-
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-
-class App extends Component {
+import { Component } from "react";
+import CardList from "./components/CardList";
+import SearchBox from "./components/SearchBox";
+import { robots } from "./robots";
+interface State {
+  robots: { id: number; name: string; email: string }[];
+  searchField: string;
+}
+class App extends Component<{}, State> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      robots: robots,
+      searchField: "",
+    };
+  }
   render() {
     return (
-      <>
-        <div>
-          <a href="https://vitejs.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => {}}>count is {}</button>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
-      </>
+      <div className="tc">
+        <h1>RoboFriends</h1>
+        <SearchBox />
+        <CardList robots={this.state.robots} />
+      </div>
     );
   }
 }
