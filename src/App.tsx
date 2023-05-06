@@ -1,4 +1,4 @@
-import { Component, ChangeEvent } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import CardList from "./components/CardList";
 import SearchBox from "./components/SearchBox";
 
@@ -8,43 +8,40 @@ interface State {
   searchField: string;
 }
 
-class App extends Component<{}, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      robots: [],
-      searchField: "",
-    };
+
+
+function App() {
+  const [robots, setRobots] = useState<State['robots']>([]);
+  const [searchField, setSearchField] = useState('');
+
+  const onSearchChange = (event: ChangeEvent) => {
+    setSearchField((event.target as HTMLInputElement).value);
   }
 
-  componentDidMount() {
+  const filteredRobots = robots.filter(robot => {
+    return robot.name.toLocaleLowerCase().includes(searchField.toLowerCase());
+  });
+
+  useEffect(() => {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(response => response.json())
-      .then(users => this.setState({ robots: users }));
-  }
+      .then(users => setRobots(users))
+  });
 
-  onSearchChange = (event: ChangeEvent) => {
-    this.setState({ searchField: (event.target as HTMLInputElement).value })
 
-  }
+  return !robots.length ?
+    <h1>Loading</h1>
+    :
+    (
+      <div className="tc">
+        <h1>RoboFriends</h1>
+        <SearchBox searchChange={onSearchChange} />
+        <CardList robots={filteredRobots} />
+      </div>
+    );
 
-  render() {
-    const { robots, searchField } = this.state;
-    const filteredRobots = robots.filter(robot => {
-      return robot.name.toLocaleLowerCase().includes(searchField.toLowerCase());
-    })
-    return !robots.length ?
-      <h1>Loading</h1>
-      :
-      (
-        <div className="tc">
-          <h1>RoboFriends</h1>
-          <SearchBox searchChange={this.onSearchChange} />
-          <CardList robots={filteredRobots} />
-        </div>
-      );
-
-  }
 }
+
+
 
 export default App;
