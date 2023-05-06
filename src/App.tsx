@@ -14,6 +14,13 @@ function App() {
   const [robots, setRobots] = useState<State['robots']>([]);
   const [searchField, setSearchField] = useState('');
 
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(users => setRobots(users))
+
+  }, []);
+
   const onSearchChange = (event: ChangeEvent) => {
     setSearchField((event.target as HTMLInputElement).value);
   }
@@ -21,13 +28,6 @@ function App() {
   const filteredRobots = robots.filter(robot => {
     return robot.name.toLocaleLowerCase().includes(searchField.toLowerCase());
   });
-
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(users => setRobots(users))
-  });
-
 
   return !robots.length ?
     <h1>Loading</h1>
@@ -39,7 +39,6 @@ function App() {
         <CardList robots={filteredRobots} />
       </div>
     );
-
 }
 
 
